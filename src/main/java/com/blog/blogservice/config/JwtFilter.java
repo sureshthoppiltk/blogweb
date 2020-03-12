@@ -51,9 +51,8 @@ public class JwtFilter extends GenericFilterBean {
 			throws IOException, ServletException {
 
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
-		if (securityEnabled && (!httpRequest.getRequestURI().equals("/blog/login") ||
-				!httpRequest.getRequestURI().equals("/blog"))) {
+		logger.info("--->Security enabled : "+securityEnabled);
+		if (securityEnabled && !httpRequest.getRequestURI().equals("/blog/login")) {
 			logger.info("Filter invoked");
 			final String authHeader = httpRequest.getHeader("authorization");
 			if (authHeader == null || !authHeader.startsWith("Bearer")) {
