@@ -2,6 +2,7 @@ package com.blog.blogservice.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -32,6 +33,9 @@ import java.util.Enumeration;
 public class JwtFilter extends GenericFilterBean {
 
 	private static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
+	
+	@Value("${jwt.security}")
+	private boolean securityEnabled;
 
 	/*
 	 * Override the doFilter method of GenericFilterBean. Retrieve the
@@ -47,7 +51,9 @@ public class JwtFilter extends GenericFilterBean {
 			throws IOException, ServletException {
 
 		final HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if (!httpRequest.getRequestURI().equals("/blog/login")) {
+		
+		if (securityEnabled && (!httpRequest.getRequestURI().equals("/blog/login") ||
+				!httpRequest.getRequestURI().equals("/blog"))) {
 			logger.info("Filter invoked");
 			final String authHeader = httpRequest.getHeader("authorization");
 			if (authHeader == null || !authHeader.startsWith("Bearer")) {
